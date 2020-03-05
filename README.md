@@ -1,6 +1,6 @@
 # Machine Learning with Weka and Spring examples
 
-Code url: https://github.com/dmmiller612/Machine_Learning_Spring_Weka
+Original fork url: https://github.com/dmmiller612/Machine_Learning_Spring_Weka
 
 # Instructions
 
@@ -130,3 +130,5 @@ Example : ANN-hiddenLayers=10-epochRate=250-FileName=Census.model
 
 SVM Naming Convention: SVM + kernelType + FileName + .model
 Example : SVM-KernelType=Linear-FileName=Car.model
+# Original Creator
+[Derek Miller](https://github.com/dmmiller612)
