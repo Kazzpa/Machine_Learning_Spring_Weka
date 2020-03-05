@@ -1,57 +1,57 @@
 package com.derek.ml.controllers;
 
+import com.derek.ml.models.ResultFilter;
 import com.derek.ml.services.FeatureReductionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+
+@RestController
+@RequestMapping(path = "/featureReduction")
 public class FeatureReductionController {
 
+
     @Autowired
-    private FeatureReductionService featureReductionService;
+    private FeatureReductionService featureSelectionService;
 
-    @ResponseBody
-    @RequestMapping(value ="/featureReduction/pca", method={RequestMethod.GET})
-    public String handleFeatureReduction() throws Exception{
-        return featureReductionService.handlePCAFeatures();
+    //TODO USE JSON
+    @GetMapping(path = "/pca", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResultFilter handleFeatureReduction() throws Exception {
+        return featureSelectionService.handlePCAFeatures();
     }
 
-    @ResponseBody
-    @RequestMapping(value ="/featureReduction/rp", method={RequestMethod.GET})
-    public String handleRP() throws Exception{
-        return featureReductionService.handleRandomizedProjectionFeatures();
+    @GetMapping(path = "/rp", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String handleRP() throws Exception {
+        return featureSelectionService.handleRandomizedProjectionFeatures();
     }
 
+
+    @GetMapping(path = "/cfs", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String handleCfsSubsetEval() throws Exception {
+        return featureSelectionService.handleCFSSubsetEval();
+    }
+/** TODO: NOT WORKING ICA
     @ResponseBody
-    @RequestMapping(value ="/featureReduction/ica", method={RequestMethod.GET})
+    @RequestMapping(value ="/ica", method={RequestMethod.GET})
     public String handleICA() throws Exception{
         return featureReductionService.handleICAFeatures();
     }
-
-    @ResponseBody
-    @RequestMapping(value ="/featureReduction/cfs", method={RequestMethod.GET})
-    public String handleCfsSubsetEval() throws Exception{
-        return featureReductionService.handleCFSSubsetEval();
+ */
+    @GetMapping(path = "/rp/plot", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void handlePlotRp() throws Exception {
+        featureSelectionService.plotRP();
     }
 
-    @ResponseBody
-    @RequestMapping(value ="/featureReduction/rp/plot", method={RequestMethod.GET})
-    public void handlePlotRp() throws Exception{
-        featureReductionService.plotRP();
+    @GetMapping(path = "/pca/plot", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void handlePlotPCA() throws Exception {
+        featureSelectionService.plotPCA();
     }
-
+/** TODO: NOT WORKING ICA
     @ResponseBody
-    @RequestMapping(value ="/featureReduction/pca/plot", method={RequestMethod.GET})
-    public void handlePlotPCA() throws Exception{
-        featureReductionService.plotPCA();
-    }
-
-    @ResponseBody
-    @RequestMapping(value ="/featureReduction/ica/plot", method={RequestMethod.GET})
+    @RequestMapping(value ="/ica/plot", method={RequestMethod.GET})
     public void handlePlotICA() throws Exception{
         featureReductionService.plotICA();
     }
+*/
 }

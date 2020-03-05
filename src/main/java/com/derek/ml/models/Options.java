@@ -1,6 +1,5 @@
 package com.derek.ml.models;
 
-
 public class Options {
 
     public Options(){}

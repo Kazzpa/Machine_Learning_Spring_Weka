@@ -3,6 +3,7 @@ package com.derek.ml.services;
 
 import com.derek.ml.models.ML;
 import com.derek.ml.models.Options;
+import com.derek.ml.models.ResultFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import weka.attributeSelection.*;
@@ -10,7 +11,6 @@ import weka.core.Attribute;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
-import weka.filters.unsupervised.attribute.IndependentComponents;
 import weka.filters.unsupervised.attribute.RandomProjection;
 import weka.filters.unsupervised.attribute.Remove;
 
@@ -19,13 +19,14 @@ import java.io.FileWriter;
 @Service
 public class FeatureReductionService {
 
+
     @Autowired
     private FileFactory fileFactory;
 
-    public String handlePCAFeatures() throws Exception{
+    public ResultFilter handlePCAFeatures() throws Exception{
         FileFactory.TrainTest carTrainTest = fileFactory.getInstancesFromFile(ML.Files.Car, new Options());
         FileFactory.TrainTest censusTrainTest = fileFactory.getInstancesFromFile(ML.Files.Census, new Options());
-        return ApplyPCA("CAR", carTrainTest.train) + "\n \n \n \n \n" + ApplyPCA("CENSUS", censusTrainTest.train);
+        return ApplyPCA("CAR", carTrainTest.train) ;
     }
 
     public String handleRandomizedProjectionFeatures() throws Exception{
@@ -33,20 +34,20 @@ public class FeatureReductionService {
         FileFactory.TrainTest censusTrainTest = fileFactory.getInstancesFromFile(ML.Files.Census, new Options());
         return applyRP(carTrainTest.train, 4).toString() + "\n \n \n \n \n" + applyRP(censusTrainTest.train, 4).toString();
     }
-
+/**     TODO: NOT WORKING ICA
     public String handleICAFeatures() throws Exception {
         FileFactory.TrainTest carTrainTest = fileFactory.getInstancesFromFile(ML.Files.CarBin, new Options());
         FileFactory.TrainTest censusTrainTest = fileFactory.getInstancesFromFile(ML.Files.CensusBin, new Options());
         return applyICA(dropClass(carTrainTest.test), 4).toString() + "\n \n \n \n \n" +  applyICA(dropClass(censusTrainTest.test), 4).toString();
     }
-
+*/
     public String handleCFSSubsetEval() throws Exception {
         FileFactory.TrainTest carTrainTest = fileFactory.getInstancesFromFile(ML.Files.Car, new Options());
         FileFactory.TrainTest censusTrainTest = fileFactory.getInstancesFromFile(ML.Files.Census, new Options());
         return applyCfsSubsetEval(carTrainTest.train) + " \n \n \n \n" + applyCfsSubsetEval(censusTrainTest.train);
     }
 
-    public String ApplyPCA(String name, Instances trainingData) throws Exception{
+    public ResultFilter ApplyPCA(String name, Instances trainingData) throws Exception{
         AttributeSelection selector = new AttributeSelection();
 
         PrincipalComponents principalComponents = new PrincipalComponents();
@@ -59,8 +60,11 @@ public class FeatureReductionService {
         selector.setSearch(ranker);
         selector.setEvaluator(principalComponents);
         selector.SelectAttributes(trainingData);
-        return name + "\n \n \n \n \n \n \n Principal Components: \n \n "
-                + principalComponents.toString() + "\n \n Attribute Selection: \n \n" + selector.toResultsString();
+        ResultFilter rf = new ResultFilter();
+        rf.setFilterName(principalComponents.toString());
+        rf.setResultTest(selector.toResultsString());
+        rf.setSelectedAtr(selector.selectedAttributes());
+        return rf;
     }
 
     public Instances applyRP(Instances trainingData, int numAttributes) throws Exception {
@@ -76,14 +80,14 @@ public class FeatureReductionService {
         principalComponents.setInputFormat(trainingData);
         return Filter.useFilter(trainingData, principalComponents);
     }
-
+/** TODO NOT WORKING
     public Instances applyICA(Instances trainingData, int numAttributes) throws Exception {
         IndependentComponents independentComponents = new IndependentComponents();
         independentComponents.setNumIterations(100);
         independentComponents.setInputFormat(trainingData);
         return Filter.useFilter(trainingData, independentComponents);
     }
-
+**/
     public String applyCfsSubsetEval(Instances data) throws Exception {
         AttributeSelection selector = new AttributeSelection();
         CfsSubsetEval cfsSubsetEval = new CfsSubsetEval();
@@ -128,7 +132,7 @@ public class FeatureReductionService {
         plotRP("PCA_car", applyPCAFilter(carTrainTest.train, 2));
         plotRP("PCA_census", applyPCAFilter(censusTrainTest.train, 2));
     }
-
+/**     TODO: NOT WORKING
     public void plotICA() throws Exception {
         FileFactory.TrainTest carTrainTest = fileFactory.getInstancesFromFile(ML.Files.CarBin, new Options());
         FileFactory.TrainTest censusTrainTest = fileFactory.getInstancesFromFile(ML.Files.CensusBin, new Options());
@@ -141,7 +145,7 @@ public class FeatureReductionService {
         plotRP("ICA_car", one);
         plotRP("ICA_census", two);
     }
-
+*/
     private Instances dropClass(Instances instances) throws Exception {
         Remove removeFilter = new Remove();
         String[] options = new String[]{"-R", Integer.toString(instances.numAttributes() -1)};

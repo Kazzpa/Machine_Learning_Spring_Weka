@@ -133,7 +133,6 @@ public class ClusterService {
             System.out.println(e.toString());
         }
     }
-
     public void plotKMWithFeature() throws Exception{
         FileFactory.TrainTest carTrainTest = fileFactory.getInstancesFromFile(ML.Files.CarBin, new Options(false, true));
         FileFactory.TrainTest censusTrainTest = fileFactory.getInstancesFromFile(ML.Files.CensusBin, new Options(false, true));
@@ -142,8 +141,10 @@ public class ClusterService {
 
         Instances pcaCar = featureReductionService.applyPCAFilter(carTrainTest.train, 30);
         Instances pcaCensus = featureReductionService.applyPCAFilter(censusTrainTest.train, 30);
+ /**
         Instances icaCar = featureReductionService.applyICA(carBin.test, 30);
         Instances icaCensus = featureReductionService.applyICA(censusBin.test, 30);
+ **/
         Instances rpCar = featureReductionService.applyRP(carBin.train, 30);
         Instances rpCensus = featureReductionService.applyRP(censusBin.train, 30);
 
@@ -153,12 +154,13 @@ public class ClusterService {
 
         plotKM(cluster, pcaCar, "PCA_CAR");
         plotKM(cluster, pcaCensus, "PCA_CENSUS");
+        /**
         plotKM(cluster, filterClass(icaCar), "ICA_CAR");
         plotKM(cluster, filterClass(icaCensus), "ICA_CENSUS");
+         */
         plotKM(cluster, rpCar, "RP_CAR");
         plotKM(cluster, rpCensus, "RP_CENSUS");
     }
-
     public void plotEMWithFeature() throws Exception {
         FileFactory.TrainTest carTrainTest = fileFactory.getInstancesFromFile(ML.Files.CarBin, new Options(false, true));
         FileFactory.TrainTest censusTrainTest = fileFactory.getInstancesFromFile(ML.Files.CensusBin, new Options(false, true));
@@ -167,8 +169,10 @@ public class ClusterService {
 
         Instances pcaCar = featureReductionService.applyPCAFilter(carTrainTest.train, 30);
         Instances pcaCensus = featureReductionService.applyPCAFilter(censusTrainTest.train, 30);
+        /**
         Instances icaCar = featureReductionService.applyICA(carBin.test, 30);
         Instances icaCensus = featureReductionService.applyICA(censusBin.test, 30);
+         */
         Instances rpCar = featureReductionService.applyRP(carBin.train, 30);
         Instances rpCensus = featureReductionService.applyRP(censusBin.train, 30);
 
@@ -178,8 +182,10 @@ public class ClusterService {
 
         plotEM(em, pcaCar, "PCA_CAR");
         plotEM(em, pcaCensus, "PCA_CENSUS");
+        /**
         plotEM(em, filterClass(icaCar), "ICA_CAR");
         plotEM(em, filterClass(icaCensus), "ICA_CENSUS");
+         */
         plotEM(em, rpCar, "RP_CAR");
         plotEM(em, rpCensus, "RP_CENSUS");
     }
@@ -200,8 +206,10 @@ public class ClusterService {
 
     private Instances applyFeatureSelection(FileFactory.TrainTest data, Cluster cluster) throws Exception{
         switch (cluster.getFeatureSelection()){
+            /**
             case ICA:
                 return filterClass(featureReductionService.applyICA(data.test, 5));
+             */
             case PCA:
                 return featureReductionService.applyPCAFilter(data.train, 5);
             case RP:

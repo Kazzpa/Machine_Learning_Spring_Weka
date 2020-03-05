@@ -90,7 +90,9 @@ public class NeuralNetworkService {
     public String neuralNetworkWithReduction() throws Exception{
         FileFactory.TrainTest censusTrainTest = fileFactory.getInstancesFromFile(ML.Files.CensusBin, new Options());
         Instances pcaCensus = featureReductionService.applyPCAFilter(censusTrainTest.test, 30);
+        /** TODO: NOT WORKING
         Instances icaCensus = featureReductionService.applyICA(censusTrainTest.test, 30);
+         */
         Instances rpCensus = featureReductionService.applyRP(censusTrainTest.test, 30);
 
         NeuralNetworkModel neuralNetworkModel = new NeuralNetworkModel();
@@ -99,12 +101,15 @@ public class NeuralNetworkService {
 
         censusTrainTest.train = pcaCensus;
         String one = handleEvaluation(handleClassification(pcaCensus, neuralNetworkModel), neuralNetworkModel, censusTrainTest);
+        /** TODO: NOT WORKING
         censusTrainTest.train = icaCensus;
         String two = handleEvaluation(handleClassification(icaCensus, neuralNetworkModel), neuralNetworkModel, censusTrainTest);
+         */
         censusTrainTest.train = rpCensus;
         String three = handleEvaluation(handleClassification(rpCensus, neuralNetworkModel), neuralNetworkModel, censusTrainTest);
 
-        return "PCA \n \n " + one + " \n \n \n ICA \n \n" + two + " \n \n \n RP \n \n" + three;
+        return "PCA \n \n " + one + /** TODO NOT WORKING" \n \n \n ICA \n \n" + two +*/ " " +
+                "\n \n \n RP \n \n" + three;
     }
 
     private String getString(NeuralNetworkModel nn){
